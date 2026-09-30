@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/ai")
@@ -27,6 +28,7 @@ public class AIController {
         this.screeningRepository = screeningRepository;
     }
 
+
     @PostMapping(
             value = "/analyze",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
@@ -36,34 +38,105 @@ public class AIController {
             @RequestParam("patientId") Long patientId
     ) throws IOException {
 
-        // Step 1: Send image to AI service
+
+        // ============================================
+        // SEND IMAGE TO FASTAPI
+        // ============================================
+
         AIResponse result = aiService.analyzeImage(
                 file.getBytes(),
                 file.getOriginalFilename()
         );
 
-        // Step 2: If AI rejects the image, don't save screening
+
+        // ============================================
+        // IF AI ANALYSIS FAILED
+        // ============================================
+
         if (!result.isSuccess()) {
             return ResponseEntity.ok(result);
         }
 
-        // Step 3: Create Screening object
+
+        // ============================================
+        // GET QUALITY DETAILS
+        // ============================================
+
+        AIResponse.QualityDetails qualityDetails =
+                result.getQualityDetails();
+
+
+        // ============================================
+        // CONVERT ORIGINAL IMAGE TO BASE64
+        // ============================================
+
+        String contentType = file.getContentType();
+
+        if (contentType == null) {
+            contentType = "image/jpeg";
+        }
+
+
+        String originalImage =
+                "data:" +
+                        contentType +
+                        ";base64," +
+                        Base64.getEncoder().encodeToString(
+                                file.getBytes()
+                        );
+
+
+        // ============================================
+        // CREATE SCREENING RECORD
+        // ============================================
+
         Screening screening = new Screening(
+
                 patientId,
+
                 result.getDrGrade(),
+
                 result.getDrClass(),
+
                 result.getConfidence(),
+
                 result.getReferableStatus(),
+
                 result.getReferableProbability(),
+
                 result.getRecommendation(),
-                result.getGradcamImage()
+
+                qualityDetails != null
+                        ? qualityDetails.getSharpness()
+                        : null,
+
+                qualityDetails != null
+                        ? qualityDetails.getBrightness()
+                        : null,
+
+                qualityDetails != null
+                        ? qualityDetails.getContrast()
+                        : null,
+
+                result.getGradcamImage(),
+
+                originalImage
         );
 
-        // Step 4: Save screening to PostgreSQL
-        Screening savedScreening =
-                screeningRepository.save(screening);
 
-        // Step 5: Return saved screening
-        return ResponseEntity.ok(savedScreening);
+        // ============================================
+        // SAVE SCREENING TO POSTGRESQL
+        // ============================================
+
+        screeningRepository.save(screening);
+
+
+        // ============================================
+        // RETURN AI RESULT
+        // ============================================
+
+        return ResponseEntity.ok(result);
+
     }
+
 }

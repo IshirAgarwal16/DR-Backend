@@ -5,13 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AIResponse {
 
     private boolean success;
+
     private String stage;
+
     private boolean fundus;
 
     @JsonProperty("fundus_confidence")
     private Double fundusConfidence;
 
     private String quality;
+
+    @JsonProperty("quality_details")
+    private QualityDetails qualityDetails;
 
     @JsonProperty("dr_grade")
     private Integer drGrade;
@@ -35,6 +40,10 @@ public class AIResponse {
     @JsonProperty("gradcam_image")
     private String gradcamImage;
 
+
+    // -----------------------------
+    // Getters and Setters
+    // -----------------------------
 
     public boolean isSuccess() {
         return success;
@@ -74,6 +83,14 @@ public class AIResponse {
 
     public void setQuality(String quality) {
         this.quality = quality;
+    }
+
+    public QualityDetails getQualityDetails() {
+        return qualityDetails;
+    }
+
+    public void setQualityDetails(QualityDetails qualityDetails) {
+        this.qualityDetails = qualityDetails;
     }
 
     public Integer getDrGrade() {
@@ -138,5 +155,44 @@ public class AIResponse {
 
     public void setGradcamImage(String gradcamImage) {
         this.gradcamImage = gradcamImage;
+    }
+
+
+    // ==========================================================
+    // Quality Details
+    // ==========================================================
+
+    public static class QualityDetails {
+
+        private Double sharpness;
+
+        private Double brightness;
+
+        private Double contrast;
+
+
+        public Double getSharpness() {
+            return sharpness;
+        }
+
+        public void setSharpness(Double sharpness) {
+            this.sharpness = sharpness;
+        }
+
+        public Double getBrightness() {
+            return brightness;
+        }
+
+        public void setBrightness(Double brightness) {
+            this.brightness = brightness;
+        }
+
+        public Double getContrast() {
+            return contrast;
+        }
+
+        public void setContrast(Double contrast) {
+            this.contrast = contrast;
+        }
     }
 }

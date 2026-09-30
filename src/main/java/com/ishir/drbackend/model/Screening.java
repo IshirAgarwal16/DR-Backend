@@ -24,11 +24,36 @@ public class Screening {
 
     private String recommendation;
 
+    private Double sharpness;
+
+    private Double brightness;
+
+    private Double contrast;
+
+    /*
+     * Grad-CAM explanation image
+     */
     @Column(columnDefinition = "TEXT")
     private String gradcamImage;
 
+    /*
+     * Original fundus image
+     */
+    @Column(columnDefinition = "TEXT")
+    private String originalImage;
+
+
+    // =========================
+    // Default Constructor
+    // =========================
+
     public Screening() {
     }
+
+
+    // =========================
+    // Parameterized Constructor
+    // =========================
 
     public Screening(
             Long patientId,
@@ -38,8 +63,13 @@ public class Screening {
             String referableStatus,
             Double referableProbability,
             String recommendation,
-            String gradcamImage
+            Double sharpness,
+            Double brightness,
+            Double contrast,
+            String gradcamImage,
+            String originalImage
     ) {
+
         this.patientId = patientId;
         this.drGrade = drGrade;
         this.drClass = drClass;
@@ -47,12 +77,26 @@ public class Screening {
         this.referableStatus = referableStatus;
         this.referableProbability = referableProbability;
         this.recommendation = recommendation;
+        this.sharpness = sharpness;
+        this.brightness = brightness;
+        this.contrast = contrast;
         this.gradcamImage = gradcamImage;
+        this.originalImage = originalImage;
     }
+
+
+    // =========================
+    // Getters and Setters
+    // =========================
 
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 
     public Long getPatientId() {
         return patientId;
@@ -62,6 +106,7 @@ public class Screening {
         this.patientId = patientId;
     }
 
+
     public Integer getDrGrade() {
         return drGrade;
     }
@@ -69,6 +114,7 @@ public class Screening {
     public void setDrGrade(Integer drGrade) {
         this.drGrade = drGrade;
     }
+
 
     public String getDrClass() {
         return drClass;
@@ -78,6 +124,7 @@ public class Screening {
         this.drClass = drClass;
     }
 
+
     public Double getConfidence() {
         return confidence;
     }
@@ -85,6 +132,7 @@ public class Screening {
     public void setConfidence(Double confidence) {
         this.confidence = confidence;
     }
+
 
     public String getReferableStatus() {
         return referableStatus;
@@ -94,13 +142,17 @@ public class Screening {
         this.referableStatus = referableStatus;
     }
 
+
     public Double getReferableProbability() {
         return referableProbability;
     }
 
-    public void setReferableProbability(Double referableProbability) {
+    public void setReferableProbability(
+            Double referableProbability
+    ) {
         this.referableProbability = referableProbability;
     }
+
 
     public String getRecommendation() {
         return recommendation;
@@ -110,6 +162,34 @@ public class Screening {
         this.recommendation = recommendation;
     }
 
+
+    public Double getSharpness() {
+        return sharpness;
+    }
+
+    public void setSharpness(Double sharpness) {
+        this.sharpness = sharpness;
+    }
+
+
+    public Double getBrightness() {
+        return brightness;
+    }
+
+    public void setBrightness(Double brightness) {
+        this.brightness = brightness;
+    }
+
+
+    public Double getContrast() {
+        return contrast;
+    }
+
+    public void setContrast(Double contrast) {
+        this.contrast = contrast;
+    }
+
+
     public String getGradcamImage() {
         return gradcamImage;
     }
@@ -117,4 +197,14 @@ public class Screening {
     public void setGradcamImage(String gradcamImage) {
         this.gradcamImage = gradcamImage;
     }
+
+
+    public String getOriginalImage() {
+        return originalImage;
+    }
+
+    public void setOriginalImage(String originalImage) {
+        this.originalImage = originalImage;
+    }
+
 }
