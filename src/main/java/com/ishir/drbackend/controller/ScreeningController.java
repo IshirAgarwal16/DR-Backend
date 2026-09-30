@@ -28,7 +28,8 @@ public class ScreeningController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Screening> getScreeningById(@PathVariable Long id) {
+    public ResponseEntity<Screening> getScreeningById(
+            @PathVariable Long id) {
 
         return screeningRepository.findById(id)
                 .map(ResponseEntity::ok)
@@ -40,5 +41,23 @@ public class ScreeningController {
             @PathVariable Long patientId) {
 
         return screeningRepository.findByPatientId(patientId);
+    }
+
+    @DeleteMapping("/patient/{patientId}")
+    public ResponseEntity<?> deletePatientScreenings(
+            @PathVariable Long patientId) {
+
+        List<Screening> screenings =
+                screeningRepository.findByPatientId(patientId);
+
+        if (screenings.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        screeningRepository.deleteByPatientId(patientId);
+
+        return ResponseEntity.ok(
+                "Screening history deleted successfully"
+        );
     }
 }
