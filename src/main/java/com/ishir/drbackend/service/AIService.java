@@ -45,7 +45,7 @@ public class AIService {
 
         ResponseEntity<AIResponse> response =
                 restTemplate.postForEntity(
-                        "http://127.0.0.1:8000/analyze",
+                        "http://host.docker.internal:8000/analyze",
                         request,
                         AIResponse.class
                 );
