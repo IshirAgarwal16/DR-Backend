@@ -1,8 +1,13 @@
+
 package com.ishir.drbackend.service;
 
 import com.ishir.drbackend.dto.AIResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -12,6 +17,9 @@ import org.springframework.web.client.RestTemplate;
 public class AIService {
 
     private final RestTemplate restTemplate;
+
+    @Value("${ai.service.url:http://localhost:8000}")
+    private String aiServiceUrl;
 
     public AIService() {
         this.restTemplate = new RestTemplate();
@@ -32,9 +40,7 @@ public class AIService {
         HttpEntity<ByteArrayResource> fileEntity =
                 new HttpEntity<>(resource, fileHeaders);
 
-        MultiValueMap<String, Object> body =
-                new LinkedMultiValueMap<>();
-
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", fileEntity);
 
         HttpHeaders headers = new HttpHeaders();
@@ -45,7 +51,7 @@ public class AIService {
 
         ResponseEntity<AIResponse> response =
                 restTemplate.postForEntity(
-                        "http://host.docker.internal:8000/analyze",
+                        aiServiceUrl + "/analyze",
                         request,
                         AIResponse.class
                 );
